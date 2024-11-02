@@ -5,12 +5,137 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>10&hairsp;000</title>
 	</head>
-	<body>
-		<h1>Astro</h1>
+	<body class="p-12">
+		<h1 class="w-full text-center my-24 font-extrabold text-9xl">
+			10&hairsp;000
+		</h1>
+		<div class="flex flex-row gap-12 w-full mb-12">
+			<input
+				type="number"
+				id="points"
+				placeholder="Current Points"
+				class="input input-bordered w-full"
+				min="0"
+				step="50"
+			/>
+			<div class="w-full">
+				<input
+					type="range"
+					id="dice"
+					min="1"
+					max="5"
+					value="1"
+					class="range"
+					step="1"
+				/>
+				<div class="flex w-full justify-between px-2 text-xs">
+					<span>1</span>
+					<span>2</span>
+					<span>3</span>
+					<span>4</span>
+					<span>5</span>
+				</div>
+			</div>
+		</div>
+		<div class="flex w-full gap-12 mb-12">
+			<div
+				id="continue_decision"
+				class="card w-full bg-base-300 rounded-box grid h-16 place-items-center font-semibold text-lg"
+			>
+			</div>
+			<div
+				id="expected_value"
+				class="card w-full bg-base-300 rounded-box grid h-16 place-items-center font-semibold text-lg"
+			>
+			</div>
+		</div>
+		<div class="overflow-x-auto">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>New Points</th>
+						<th>Probability</th>
+					</tr>
+				</thead>
+				<tbody id="target_table"></tbody>
+			</table>
+		</div>
+
+		<script>
+			import { get_probabilities } from "../scripts/calculate.ts";
+
+			(() => {
+				const dice_elem = document.getElementById(
+					"dice",
+				) as HTMLInputElement | null;
+				const points_elem = document.getElementById(
+					"points",
+				) as HTMLInputElement | null;
+				const target_table_elem =
+					document.getElementById("target_table");
+				const continue_decision_elem =
+					document.getElementById("continue_decision");
+				const expected_value_elem =
+					document.getElementById("expected_value");
+				if (
+					!dice_elem ||
+					!points_elem ||
+					!target_table_elem ||
+					!continue_decision_elem ||
+					!expected_value_elem
+				) {
+					console.warn("At least one element is missing. Aborting.");
+					return;
+				}
+
+				const update = () => {
+					const dice = dice_elem.valueAsNumber;
+					const points = points_elem.valueAsNumber;
+					const [probabilities, expected] = get_probabilities(
+						dice,
+						points,
+					);
+
+					expected_value_elem.innerText = `${Math.round(expected * 10) / 10}`;
+					if (expected > points) {
+						continue_decision_elem.innerText = "Continue!";
+
+						continue_decision_elem.classList.remove("text-red-500");
+						expected_value_elem.classList.remove("text-red-500");
+						continue_decision_elem.classList.add("text-green-500");
+						expected_value_elem.classList.add("text-green-500");
+					} else {
+						continue_decision_elem.innerText = "Stop!";
+
+						continue_decision_elem.classList.remove(
+							"text-green-500",
+						);
+						expected_value_elem.classList.remove("text-green-500");
+						continue_decision_elem.classList.add("text-red-500");
+						expected_value_elem.classList.add("text-red-500");
+					}
+
+					target_table_elem.textContent = "";
+					for (const [points, probability] of probabilities) {
+						const tr = document.createElement("tr");
+						const th = document.createElement("th");
+						const td = document.createElement("td");
+						tr.append(th, td);
+						th.innerText = `${points}`;
+						td.innerText = `${Math.round(probability * 100 * 100) / 100} %`;
+						if (points === 0) tr.classList.add("bg-base-200");
+						target_table_elem.appendChild(tr);
+					}
+				};
+
+				dice_elem.onchange = update;
+				points_elem.onchange = update;
+				update();
+			})();
+		</script>
 	</body>
 </html>
