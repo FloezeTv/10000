@@ -14,33 +14,43 @@
 			10&hairsp;000
 		</h1>
 		<div class="flex flex-row gap-12 w-full mb-12">
-			<input
-				type="number"
-				id="points"
-				placeholder="Current Points"
-				class="input input-bordered w-full"
-				min="0"
-				value="0"
-				step="50"
-			/>
-			<div class="w-full">
-				<input
-					type="range"
-					id="dice"
-					min="1"
-					max="5"
-					value="5"
-					class="range"
-					step="1"
-				/>
-				<div class="flex w-full justify-between px-2 text-xs">
-					<span>1</span>
-					<span>2</span>
-					<span>3</span>
-					<span>4</span>
-					<span>5</span>
+			<label class="form-control w-full flex flex-col">
+				<div class="label">
+					<span class="label-text">Current points</span>
 				</div>
-			</div>
+				<input
+					type="number"
+					id="points"
+					placeholder="Current Points"
+					class="input input-bordered w-full"
+					min="0"
+					value="0"
+					step="50"
+				/>
+			</label>
+			<label class="form-control w-full flex flex-col">
+				<div class="label">
+					<span class="label-text">Number of dice</span>
+				</div>
+				<div class="w-full">
+					<input
+						type="range"
+						id="dice"
+						min="1"
+						max="5"
+						value="5"
+						class="range"
+						step="1"
+					/>
+					<div class="flex w-full justify-between px-2 text-xs">
+						<span>1</span>
+						<span>2</span>
+						<span>3</span>
+						<span>4</span>
+						<span>5</span>
+					</div>
+				</div>
+			</label>
 		</div>
 		<div class="flex w-full gap-12 mb-12">
 			<div
